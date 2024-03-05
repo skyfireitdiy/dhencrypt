@@ -10,28 +10,30 @@ _Pragma("once")
     using namespace CryptoPP;
 using namespace std;
 
-class DHEncrypt {
+class DHEncrypt
+{
 public:
-  struct Token {
-    CryptoPP::Integer p;
-    CryptoPP::Integer q;
-    CryptoPP::Integer publicKey;
-  };
+    struct Token
+    {
+        CryptoPP::Integer prime;
+        CryptoPP::Integer generator;
+        CryptoPP::Integer publicKey;
+    };
 
 public:
-  DHEncrypt();
-  DHEncrypt(Token token);
+    DHEncrypt();
+    DHEncrypt(Token token);
 
-  optional<Token> GetToken();
-  optional<Integer> GetSecretKey();
-  void SetRemotePublicKey(Integer publicKey);
+    optional<Token> GetToken();
+    optional<Integer> GetSecretKey();
+    void SetRemotePublicKey(Integer publicKey);
 
 private:
-  optional<SecByteBlock> publicKey;
-  optional<SecByteBlock> remotePublicKey;
-  optional<SecByteBlock> privKey;
+    optional<SecByteBlock> publicKey;
+    optional<SecByteBlock> remotePublicKey;
+    optional<SecByteBlock> privKey;
 
-  AutoSeededRandomPool rnd;
+    AutoSeededRandomPool rnd;
 
-  DH dh_;
+    DH dh_;
 };
