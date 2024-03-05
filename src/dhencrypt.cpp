@@ -9,7 +9,7 @@ DHEncrypt::DHEncrypt()
 
 DHEncrypt::DHEncrypt(Token token)
 {
-    dh_.AccessGroupParameters().Initialize(token.p, token.generator);
+    dh_.AccessGroupParameters().Initialize(token.prime, token.generator);
     SetRemotePublicKey(token.publicKey);
 }
 

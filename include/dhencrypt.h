@@ -15,9 +15,9 @@ class DHEncrypt
 public:
     struct Token
     {
-        CryptoPP::Integer prime;
-        CryptoPP::Integer generator;
-        CryptoPP::Integer publicKey;
+        Integer prime;
+        Integer generator;
+        Integer publicKey;
     };
 
 public:
