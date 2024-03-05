@@ -1,6 +1,7 @@
 #include "cryptopp/integer.h"
 #include "dhencrypt.h"
 #include "Comm.h"
+#include <string>
 #include <thrift/protocol/TBinaryProtocol.h>
 #include <thrift/server/TSimpleServer.h>
 #include <thrift/transport/TBufferTransports.h>
@@ -59,6 +60,28 @@ int main()
         dhe.SetRemotePublicKey(publicKey);
         auto secretKey = dhe.GetSecretKey();
         cout << "client secretKey: " << *secretKey << endl;
+
+        ostringstream so;
+        so << *secretKey;
+        auto keyStr = so.str();
+
+        string data;
+        while (getline(cin, data))
+        {
+            if (data == "quit")
+            {
+                break;
+            }
+
+            string encrypted = dhe.Encrypt(data, keyStr);
+            string resp;
+
+            client.sendMsg(resp, encrypted);
+            string decrypted = dhe.Decrypt(resp, keyStr);
+            cout << "receive server response: " << decrypted << endl;
+        }
+
+        transport->close();
     }
     catch (...)
     {

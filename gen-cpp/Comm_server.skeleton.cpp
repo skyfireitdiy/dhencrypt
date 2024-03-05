@@ -39,10 +39,15 @@ public:
         _dhe = std::make_unique<DHEncrypt>(DHEncrypt::Token {prime, generator, public_key});
         _dhe->SetRemotePublicKey(public_key);
         auto localPublicKey = _dhe->GetToken()->publicKey;
-        secretKey = *_dhe->GetSecretKey();
-        cout << "server secretKey: " << secretKey << endl;
+        auto skey = *_dhe->GetSecretKey();
 
         ostringstream so;
+        so << skey;
+        secretKey = so.str();
+
+        cout << "server secretKey: " << secretKey << endl;
+
+        so.str("");
         so << localPublicKey;
         _return.publicKey = so.str();
         cout << "server public_key: " << _return.publicKey << endl;
@@ -50,18 +55,19 @@ public:
 
     void sendMsg(std::string &_return, const std::string &msg)
     {
-        // Your implementation goes here
-        printf("sendMsg\n");
+        auto decrypted = _dhe->Decrypt(msg, secretKey);
+        cout << "server receive msg: " << decrypted << endl;
+        _return = _dhe->Encrypt("This msg is server resposed, source msg is " + decrypted, secretKey);
     }
 
 private:
     std::unique_ptr<DHEncrypt> _dhe;
-    Integer secretKey;
+    string secretKey;
 };
 
 int main(int argc, char **argv)
 {
-    int port = 9090;
+    int port = 10250;
     ::std::shared_ptr<CommHandler> handler(new CommHandler());
     ::std::shared_ptr<TProcessor> processor(new CommProcessor(handler));
     ::std::shared_ptr<TServerTransport> serverTransport(new TServerSocket(port));
